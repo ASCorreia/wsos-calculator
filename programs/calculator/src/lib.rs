@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::entrypoint::ProgramResult;
 
-declare_id!("2VsDgBxxmv6cyKAJjjmKHggt777rN4ELvQ2W6yCzzpqp");
+declare_id!("4ZWR7VdtTv6cKvr36dqWwdrcpq9xj7JaKTK3izmiuXk4");
+
+//test with anchor test --provider.cluster devnet , to avoid local validator issues
 
 #[program]
 pub mod calculator {
@@ -19,6 +21,17 @@ pub mod calculator {
         Ok(())
     }
     
+    pub fn sub(ctx: Context<Subtraction>, num1: i64, num2: i64) -> ProgramResult {
+        let calculator = &mut ctx.accounts.calculator;
+        calculator.result = num1 - num2;
+        Ok(())
+    }
+
+    pub fn mult(ctx: Context<Multiplication>, num1: i64, num2: i64) -> ProgramResult {
+        let calculator = &mut ctx.accounts.calculator;
+        calculator.result = num1 * num2;
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -35,6 +48,24 @@ pub struct Create<'info> {
 
 #[derive(Accounts)]
 pub struct Addition<'info> {
+    #[account(mut)]
+    pub calculator: Account<'info, Calculator>,
+}
+
+#[derive(Accounts)]
+pub struct Multiplication<'info> {
+    #[account(mut)]
+    pub calculator: Account<'info, Calculator>,
+}
+
+#[derive(Accounts)]
+pub struct Subtraction<'info> {
+    #[account(mut)]
+    pub calculator: Account<'info, Calculator>,
+}
+
+#[derive(Accounts)]
+pub struct Division<'info> {
     #[account(mut)]
     pub calculator: Account<'info, Calculator>,
 }
