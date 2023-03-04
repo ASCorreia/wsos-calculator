@@ -4,6 +4,8 @@ import { Calculator } from "../target/types/calculator";
 const { SystemProgram } = anchor.web3
 import { expect } from 'chai';
 
+//test with anchor test --provider.cluster devnet , to avoid local validator issues and use devnet
+
 //Moka works using predescribed it blocks 
 describe("calculator", () => {
   // Configure the client to use the local cluster.
@@ -43,6 +45,39 @@ describe("calculator", () => {
     .rpc()
     const account = await program.account.calculator.fetch(calculatorPair.publicKey)
     expect(account.result).to.eql(new anchor.BN(5))
-})
+  })
+
+  //Another test step - test out subtraction
+  it('Subtraction',async () => {
+    await program.methods.sub(new anchor.BN(3), new anchor.BN(2))
+    .accounts({
+        calculator: calculatorPair.publicKey,
+    })
+    .rpc()
+    const account = await program.account.calculator.fetch(calculatorPair.publicKey)
+    expect(account.result).to.eql(new anchor.BN(1))
+  })
+
+  //Another test step - test out multiplication
+  it('Multiplication',async () => {
+    await program.methods.mult(new anchor.BN(2), new anchor.BN(3))
+    .accounts({
+        calculator: calculatorPair.publicKey,
+    })
+    .rpc()
+    const account = await program.account.calculator.fetch(calculatorPair.publicKey)
+    expect(account.result).to.eql(new anchor.BN(6))
+  })
+
+  //Another test step - test out division
+  it('Division',async () => {
+    await program.methods.div(new anchor.BN(3), new anchor.BN(3))
+    .accounts({
+        calculator: calculatorPair.publicKey,
+    })
+    .rpc()
+    const account = await program.account.calculator.fetch(calculatorPair.publicKey)
+    expect(account.result).to.eql(new anchor.BN(1))
+  })
 
 });
